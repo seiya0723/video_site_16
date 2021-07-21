@@ -1,0 +1,34 @@
+{% for reply in replies %}
+<div class="s_video_sub_inner">
+
+    <div class="s_video_sub_inner_left">
+        <a href="{% url 'tube:usersingle' reply.user.id %}">
+            {% if reply.user.usericon %}
+                <div><img class="video_usericon" src="/media/{{ reply.user.usericon }}" alt="icon"></div>
+            {% else %}
+                <div><img class="video_usericon" src="/media/tube/usericon/non_usericon.png" alt="{{ icon }}"></div>
+            {% endif %}
+        </a>
+    </div>
+
+    <div class="s_video_sub_inner_right">
+        <a href="{% url 'tube:usersingle' reply.user.id %}"><div class="handle_name_area"> {{ reply.user.handle_name }} </div></a>
+        <div>{{ reply.content|linebreaksbr|urlize }}</div>
+        <div class="video_comment_dt">{{ reply.dt|date:"Y-m-d h時" }} &nbsp;<i class="far fa-comment"></i>{{ reply.num_reply }}&nbsp;</div>
+
+        <!--TIPS:コメントはループするのでidが重複してしまう。id属性の指定は禁止 ←ただし、UUIDを噛ませることで重複を防ぐことができる。-->
+        <input id="reply_to_reply_button_{{ reply.id }}" class="reply_to_reply_chk" type="checkbox"><label class="reply_to_reply_label" for="reply_to_reply_button_{{ reply.id }}">返信</label>
+
+        <div class="reply_to_reply_area">
+            <form id="reply_to_reply_form_{{ reply.id }}" action="{% url 'tube:video_comment_reply_to_reply' reply.id  %}" method="POST">
+                {% csrf_token %}
+                <textarea class="textarea_form" name="content" placeholder="返信"></textarea>
+                <button class="reply_to_reply_submit btn btn-videocomment" value="{{ reply.id }}" type="button"><i class="far fa-paper-plane"></i></button>
+            </form><br class="my-2">
+            <div id="reply_to_reply_content_{{ reply.id }}"><!--TODO:ここにリプライがJSによりレンダリングされる--></div>
+        </div>
+
+    </div>
+</div>
+{% endfor %}
+

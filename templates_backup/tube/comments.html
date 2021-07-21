@@ -1,0 +1,52 @@
+{% load param_change %}
+
+{% for comment in comments %}
+<div class="s_video_sub_inner">
+
+    <div class="s_video_sub_inner_left">
+        <a href="{% url 'tube:usersingle' comment.user.id %}">
+            {% if comment.user.usericon %}
+                <div><img class="video_usericon" src="/media/{{ comment.user.usericon }}" alt="icon"></div>
+                <div> {{ comment.user.handle_name }} </div>
+            {% else %}
+                <div><i class="fas fa-user comment_icon"></i></div>
+                <div> {{ comment.user.handle_name }}</div>
+            {% endif %}
+        </a>
+    </div>
+
+    <div class="s_video_sub_inner_right">
+        <div>{{ comment.content|linebreaksbr|urlize }}</div>
+        <div>{{ comment.dt|date:"Y-m-d h時" }}
+
+        </div>
+    </div>
+
+    {% comment %} #ここはinputでボタンを作り、jsで入力タグを表示すべき？
+     <div id="reply_comment_area">
+         {% include "tube/reply_to_comment.html" %}
+     </div>
+    {% endcomment %}
+
+</div>
+
+{% endfor %}
+
+
+    <input id="reply_tab" class="reply_tab_box" type="checkbox" name="reply_tab"><label for="reply_tab" class="reply_tab_label">コメントを書く</label>
+        <div class="reply_form_area">
+            <div id="reply_to_comment_message" class="js_message"></div>
+            <form id="reply_form" class="reply_form" >
+            {% csrf_token %}
+                <textarea class="textarea_form" name="content" rows="4" placeholder="返信..."></textarea>
+                <input id="reply_to_comment" class="btn-gradient-success" type="button" value="投稿">
+            </form>
+        </div>
+
+{% if comments %}
+<form id="comment_pagination_area" class="pagination_area" action="{% url 'tube:single_mod' video.id %}" method="GET">
+    {% generate_pagelink_comment request "page" "1" comments.paginator.num_pages comments.number %}
+</form>
+
+{% endif %}
+

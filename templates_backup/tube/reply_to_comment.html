@@ -1,0 +1,44 @@
+{% comment %}
+
+{% if replys %}
+
+        <input id="reply_tab" class="reply_tab_box" type="checkbox" name="reply_tab"><label for="reply_tab" class="reply_tab_label">返信</label>
+            <div class="reply_form_area">
+                <div id="reply_to_comment_message" class="js_message"></div>
+                <form id="reply_form" class="reply_form" action="{% url 'tube:reply_to_comment' comment.id %}" >
+                {% csrf_token %}
+                    <textarea class="textarea_form" name="content" rows="4" placeholder="返信...">{{ reply_to_comment.content }}</textarea>
+                    <input id="reply_to_comment" class="btn-gradient-success" type="button" value="投稿">
+                </form>
+            </div>
+
+{% endif %}
+
+{% for reply in replys %}
+
+
+<div class="s_video_sub_inner">
+
+    <div class="s_video_sub_inner_left">
+        <a href="{% url 'tube:usersingle' reply.user.id %}">
+            {% if reply.user.usericon %}
+                <div><img class="video_usericon" src="/media/{{ reply.user.usericon }}" alt="icon"></div>
+                <div> {{ reply.user.handle_name }} </div>
+            {% else %}
+                <div><i class="fas fa-user comment_icon"></i></div>
+                <div> {{ reply.user.handle_name }}</div>
+            {% endif %}
+        </a>
+    </div>
+
+    <div class="s_video_sub_inner_right">
+        <div>{{ reply.content|linebreaksbr|urlize }}</div>
+        <div>{{ reply.dt|date:"Y-m-d h時" }}</div>
+    </div>
+
+
+</div>
+
+{% endfor %}
+
+{% endcomment %}
